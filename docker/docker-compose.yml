@@ -1,0 +1,40 @@
+version: '3'
+services:
+    php:
+        build: php-container
+        volumes:
+            - ../source:/var/www
+        working_dir: /var/www/public
+        command: php-fpm
+        links:
+            - mysql
+        environment: 
+            APP_ENV: local
+            APP_DEBUG: 'true'
+            APP_KEY: DitIsNietMijnKey!!!
+            APP_LOCALE: en
+            DB_CONNECTION: mysql
+            DB_HOST: mysql
+            DB_DATABASE: lumen
+            DB_USERNAME: lumen
+            DB_PASSWORD: DitIsNietMijnWachtwoord123!
+            XDEBUG_CONFIG: remote_host=docker.internal
+            PHP_IDE_CONFIG: serverName=localhost
+    
+    mysql:
+        image: mariadb
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: DitIsNietMijnRootWachtwoord
+            MYSQL_DATABASE: lumen
+            MYSQL_USER: lumen
+            MYSQL_PASSWORD: DitIsNietMijnWachtwoord123!
+
+    nginx:
+        build: nginx-container
+        command: nginx -g "daemon off;"
+        links:
+            - php
+        ports:
+            - "8001:80"
